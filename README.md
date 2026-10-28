@@ -14,7 +14,7 @@ PostgreSQL guarda metadatos y reseñas. EPUB y portadas viven en un volumen pers
 
 ## Configuración y arranque
 
-Requiere Docker con el motor en funcionamiento. Copie .env.example a .env y complete POSTGRES_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD y DATABASE_URL. La contraseña en DATABASE_URL debe coincidir con POSTGRES_PASSWORD y codificarse como parte de una URL si tiene caracteres especiales. La forma es postgresql+psycopg://epub:<password-codificado>@db:5432/epub. .env está excluido de Git y de la imagen.
+Requiere Docker con el motor en funcionamiento. Copie .env.example a .env y complete POSTGRES_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD y DATABASE_URL. La contraseña en DATABASE_URL debe coincidir con POSTGRES_PASSWORD y codificarse como parte de una URL si tiene caracteres especiales. La forma es postgresql+psycopg://epub:PASSWORD_URL_ENCODED@db:5432/epub. .env está excluido de Git y de la imagen.
 
     Copy-Item .env.example .env
     # Edite .env antes de continuar.
@@ -55,6 +55,6 @@ Las pruebas requieren un PostgreSQL de prueba separado. Con Compose, use el arch
     docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
     docker compose exec -T db createdb -U epub test_epub
 
-Defina TEST_DATABASE_URL con postgresql+psycopg://epub:<POSTGRES_PASSWORD>@127.0.0.1:5433/test_epub (codifique caracteres especiales), instale requirements-dev.txt y ejecute python -m pytest -q. El fixture exige un nombre con test, aplica Alembic y trunca solo esa base entre pruebas. Las pruebas cubren búsqueda, filtro, cursor, ficha, portada, descarga, autenticación, límites de cuerpo, archivos inválidos/grandes/duplicados y reseñas.
+Defina TEST_DATABASE_URL con postgresql+psycopg://epub:PASSWORD_URL_ENCODED@127.0.0.1:5433/test_epub (codifique caracteres especiales), instale requirements-dev.txt y ejecute python -m pytest -q. El fixture exige un nombre con test, aplica Alembic y trunca solo esa base entre pruebas. Las pruebas cubren búsqueda, filtro, cursor, ficha, portada, descarga, autenticación, límites de cuerpo, archivos inválidos/grandes/duplicados y reseñas.
 
 Para verificar persistencia, cargue un libro y reseña, anote sus IDs, reconstruya con docker compose build y docker compose up -d --force-recreate, y vuelva a consultar /books/{id} y /books/{id}/reviews. El script scripts/smoke_compose.py hace esta comprobación en dos pasos (create antes y verify después); requiere ADMIN_USERNAME y ADMIN_PASSWORD en el entorno y httpx instalado. La validación EPUB limita entradas, tamaño descomprimido, proporción de compresión, rutas peligrosas y archivos de lectura. No sustituye un análisis antimalware; cargue fuentes confiables.
