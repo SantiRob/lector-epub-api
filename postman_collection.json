@@ -1,0 +1,135 @@
+{
+  "info": {
+    "name": "Lector EPUB API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "adminUsername",
+      "value": ""
+    },
+    {
+      "key": "adminPassword",
+      "value": ""
+    },
+    {
+      "key": "bookId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/health"
+      }
+    },
+    {
+      "name": "Listar libros",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/books?limit=20"
+      }
+    },
+    {
+      "name": "Detalle",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/books/{{bookId}}"
+      }
+    },
+    {
+      "name": "Descargar EPUB",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/books/{{bookId}}/download"
+      }
+    },
+    {
+      "name": "Subir libro",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/books",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{adminUsername}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{adminPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "author",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "language",
+              "value": "es",
+              "type": "text"
+            },
+            {
+              "key": "rights_note",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "epub",
+              "type": "file",
+              "src": ""
+            },
+            {
+              "key": "cover",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar reseñas",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/books/{{bookId}}/reviews"
+      }
+    },
+    {
+      "name": "Publicar reseña",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/books/{{bookId}}/reviews",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"client_review_id\":\"d95b8ef5-4c56-4dd6-9acc-24969b8ca46f\",\"display_name\":\"Lector\",\"rating\":5,\"comment\":\"Me gustó\"}"
+        }
+      }
+    }
+  ]
+}
