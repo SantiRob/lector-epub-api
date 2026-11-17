@@ -35,8 +35,8 @@ class DuplicateBookError(BookValidationError):
         super().__init__("El EPUB ya existe", 409)
 
 
-def list_books(db: Session, q: str | None, language: str | None, cursor: int | None, limit: int):
-    return repository.list_published(db, q, language, cursor, limit)
+def list_books(db: Session, q: str | None, language: str | None, category: str | None, cursor: int | None, limit: int):
+    return repository.list_published(db, q, language, category, cursor, limit)
 
 
 def get_book(db: Session, book_id: int):
@@ -82,6 +82,7 @@ def create_book(db: Session, fields: dict[str, Any], epub: UploadFile, cover: Up
             title=fields["title"],
             author=fields["author"],
             language=fields["language"],
+            category=fields.get("category"),
             description=fields.get("description"),
             epub_path=epub_relative,
             cover_path=cover_relative,

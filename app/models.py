@@ -20,6 +20,7 @@ class Book(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     author: Mapped[str] = mapped_column(String(255), nullable=False)
     language: Mapped[str] = mapped_column(String(8), nullable=False)
+    category: Mapped[str | None] = mapped_column(String(32), index=True)
     description: Mapped[str | None] = mapped_column(Text)
     epub_path: Mapped[str] = mapped_column(String(512), nullable=False)
     cover_path: Mapped[str | None] = mapped_column(String(512))

@@ -16,6 +16,7 @@ app = FastAPI(title="Lector EPUB API", version="1.0.0", description="Catálogo p
 app.add_middleware(CORSMiddleware, allow_origins=cors_origins(), allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Content-Type", "Authorization"])
 app.add_middleware(UploadBoundaryMiddleware)
 logger = logging.getLogger(__name__)
+CATEGORY_PATTERN = r"^[a-z][a-z-]{1,31}$"
 
 
 @app.exception_handler(Exception)
@@ -28,7 +29,7 @@ def book_out(row: tuple) -> BookOut:
     book, average, count = row
     prefix = f"/api/v1/books/{book.id}"
     return BookOut(
-        id=book.id, title=book.title, author=book.author, language=book.language,
+        id=book.id, title=book.title, author=book.author, language=book.language, category=book.category,
         description=book.description, file_size_bytes=book.file_size_bytes,
         sha256=book.sha256, source_url=book.source_url, rights_note=book.rights_note,
         created_at=book.created_at, updated_at=book.updated_at,
@@ -45,8 +46,8 @@ def health() -> dict[str, str]:
 
 
 @app.get("/api/v1/books", response_model=BookPage, tags=["books"])
-def list_books(q: str | None = Query(None, max_length=255), language: str | None = Query(None, pattern=r"^[a-z]{2,8}$"), cursor: int | None = Query(None, ge=0), limit: int = Query(20, ge=1, le=50), db: Session = Depends(get_db)):
-    rows = book_service.list_books(db, q, language, cursor, limit + 1)
+def list_books(q: str | None = Query(None, max_length=255), language: str | None = Query(None, pattern=r"^[a-z]{2,8}$"), category: str | None = Query(None, pattern=CATEGORY_PATTERN), cursor: int | None = Query(None, ge=0), limit: int = Query(20, ge=1, le=50), db: Session = Depends(get_db)):
+    rows = book_service.list_books(db, q, language, category, cursor, limit + 1)
     has_more = len(rows) > limit
     page = rows[:limit]
     return BookPage(items=[book_out(row) for row in page], next_cursor=page[-1][0].id if has_more else None)
@@ -84,11 +85,11 @@ def download_book(book_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/api/v1/books", response_model=BookOut, status_code=201, responses={401: {"model": ErrorResponse}, 409: {"model": ErrorResponse}, 413: {"model": ErrorResponse}, 422: {"model": ErrorResponse}}, tags=["books"], dependencies=[Depends(require_admin)])
-def create_book(title: str = Form(..., min_length=1, max_length=255), author: str = Form(..., min_length=1, max_length=255), language: str = Form(..., pattern=r"^[a-z]{2,8}$"), rights_note: str = Form(..., min_length=1), description: str | None = Form(None), source_url: str | None = Form(None), epub: UploadFile = File(...), cover: UploadFile | None = File(None), db: Session = Depends(get_db)):
+def create_book(title: str = Form(..., min_length=1, max_length=255), author: str = Form(..., min_length=1, max_length=255), language: str = Form(..., pattern=r"^[a-z]{2,8}$"), rights_note: str = Form(..., min_length=1), category: str | None = Form(None, pattern=CATEGORY_PATTERN), description: str | None = Form(None), source_url: str | None = Form(None), epub: UploadFile = File(...), cover: UploadFile | None = File(None), db: Session = Depends(get_db)):
     title, author, rights_note = title.strip(), author.strip(), rights_note.strip()
     if not title or not author or not rights_note:
         raise HTTPException(422, "Title, author and rights_note cannot be blank")
-    fields = dict(title=title, author=author, language=language, rights_note=rights_note, description=description, source_url=source_url)
+    fields = dict(title=title, author=author, language=language, category=category, rights_note=rights_note, description=description, source_url=source_url)
     try:
         book = book_service.create_book(db, fields, epub, cover)
     except book_service.DuplicateBookError as exc:

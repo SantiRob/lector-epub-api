@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.models import Book, Review
 
 
-def list_published(db: Session, q: str | None, language: str | None, cursor: int | None, limit: int):
+def list_published(db: Session, q: str | None, language: str | None, category: str | None, cursor: int | None, limit: int):
     query = (
         select(Book, func.avg(Review.rating), func.count(Review.id))
         .outerjoin(Review, Review.book_id == Book.id)
@@ -23,6 +23,8 @@ def list_published(db: Session, q: str | None, language: str | None, cursor: int
         query = query.where(or_(Book.title.ilike(pattern, escape="\\"), Book.author.ilike(pattern, escape="\\")))
     if language:
         query = query.where(Book.language == language)
+    if category:
+        query = query.where(Book.category == category)
     if cursor is not None:
         query = query.where(Book.id > cursor)
     return db.execute(query).all()

@@ -32,7 +32,7 @@ Para acceso remoto, termine TLS en un proxy HTTPS y configure CORS_ORIGINS como 
 
 ## Carga desde Postman
 
-Suba solo libros cuya distribución esté permitida y registre fuente/autorización en rights_note. Importe [postman_collection.json](postman_collection.json) o cree POST http://localhost:8000/api/v1/books. En Authorization seleccione Basic Auth y use ADMIN_USERNAME y ADMIN_PASSWORD de .env. En Body seleccione form-data: title, author, language (es/en), rights_note, description y source_url opcionales, epub como File y cover opcional como File. Deje que Postman establezca Content-Type multipart.
+Suba solo libros cuya distribución esté permitida y registre fuente/autorización en rights_note. Importe [postman_collection.json](postman_collection.json) o cree POST http://localhost:8000/api/v1/books. En Authorization seleccione Basic Auth y use ADMIN_USERNAME y ADMIN_PASSWORD de .env. En Body seleccione form-data: title, author, language (es/en), rights_note, category, description y source_url opcionales, epub como File y cover opcional como File. Deje que Postman establezca Content-Type multipart.
 
     curl.exe -u "<usuario>:<contraseña>" -F "title=Libro permitido" -F "author=Autora" -F "language=es" -F "rights_note=Fuente y permiso" -F "epub=@C:\ruta\libro.epub" http://localhost:8000/api/v1/books
     curl.exe "http://localhost:8000/api/v1/books?q=Libro&language=es&limit=20"
@@ -44,7 +44,7 @@ Para publicar reseña, envíe POST /api/v1/books/1/reviews con JSON:
 
 ## Contrato
 
-Todas las rutas usan /api/v1. GET /health informa el estado básico. GET /books devuelve libros publicados, admite q (título o autor), language, cursor de ID exclusivo y limit 1–50 (20 predeterminado). Cada libro incluye promedio y cantidad de reseñas, has_cover y URLs relativas de portada y descarga, sin rutas internas. GET /books/{id} ofrece la ficha; /cover entrega JPG/PNG/WebP y /download application/epub+zip. POST /books requiere HTTP Basic, limita EPUB a 25 MiB y portada a 5 MiB, valida contenido y devuelve 409 ante SHA-256 duplicado. GET /books/{id}/reviews pagina por ID; POST /books/{id}/reviews devuelve 201 al crear, 200 para un reintento idéntico y 409 si el UUID ya identifica datos distintos. No hay edición ni eliminación en v1.
+Todas las rutas usan /api/v1. GET /health informa el estado básico. GET /books devuelve libros publicados, admite q (título o autor), language, category (minúsculas, p. ej. classics, novels, poetry), cursor de ID exclusivo y limit 1–50 (20 predeterminado). Cada libro incluye promedio y cantidad de reseñas, has_cover y URLs relativas de portada y descarga, sin rutas internas. GET /books/{id} ofrece la ficha; /cover entrega JPG/PNG/WebP y /download application/epub+zip. POST /books requiere HTTP Basic, limita EPUB a 25 MiB y portada a 5 MiB, valida contenido y devuelve 409 ante SHA-256 duplicado. GET /books/{id}/reviews pagina por ID; POST /books/{id}/reviews devuelve 201 al crear, 200 para un reintento idéntico y 409 si el UUID ya identifica datos distintos. No hay edición ni eliminación en v1.
 
 Android genera client_review_id UUID al guardar una reseña pendiente, y conserva ese UUID en los reintentos. Tras 201 o 200 puede marcarla sincronizada; 409 requiere resolver el conflicto local; 422 requiere corregir los datos. El nombre visible no verifica identidad. Las reseñas anónimas pueden recibir contenido no deseado; no hay moderación ni límite por persona en v1.
 

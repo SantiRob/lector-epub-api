@@ -32,13 +32,13 @@ def png_bytes() -> bytes:
     return stream.getvalue()
 
 
-def upload(client, *, title="Libro", author="Autora", language="es", epub=None, cover=True):
+def upload(client, *, title="Libro", author="Autora", language="es", category=None, epub=None, cover=True):
     files = {"epub": ("anything.epub", epub if epub is not None else epub_bytes(), "application/octet-stream")}
     if cover:
         files["cover"] = ("anything.png", png_bytes(), "application/octet-stream")
     return client.post(
         "/api/v1/books",
-        data={"title": title, "author": author, "language": language, "rights_note": "Distribución permitida"},
+        data={"title": title, "author": author, "language": language, "rights_note": "Distribución permitida", **({"category": category} if category else {})},
         files=files,
         auth=("test-admin", "test-password"),
     )
@@ -60,6 +60,17 @@ def test_auth_upload_detail_cover_download(client):
     download = client.get(book["download_url"])
     assert download.status_code == 200 and download.headers["content-type"] == "application/epub+zip"
     assert download.content == epub_bytes()
+
+
+def test_category_filter(client):
+    assert upload(client, title="Odas", category="poetry").status_code == 201
+    assert upload(client, title="Saga", category="novels", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Saga</p></body></html>'), cover=False).status_code == 201
+    assert upload(client, title="Suelto", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Suelto</p></body></html>'), cover=False).status_code == 201
+    result = client.get("/api/v1/books", params={"category": "poetry"}).json()
+    assert [(book["title"], book["category"]) for book in result["items"]] == [("Odas", "poetry")]
+    assert len(client.get("/api/v1/books").json()["items"]) == 3
+    assert client.get("/api/v1/books", params={"category": "Poetry!"}).status_code == 422
+    assert upload(client, title="Malo", category="No Valida").status_code == 422
 
 
 def test_search_filter_cursor_and_aggregates(client):
