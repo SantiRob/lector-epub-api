@@ -89,11 +89,6 @@
               "type": "text"
             },
             {
-              "key": "category",
-              "value": "Clásicos",
-              "type": "text"
-            },
-            {
               "key": "rights_note",
               "value": "",
               "type": "text"

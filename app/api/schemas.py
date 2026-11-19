@@ -13,7 +13,6 @@ class BookOut(BaseModel):
     title: str
     author: str
     language: str
-    category: str
     description: str | None
     file_size_bytes: int
     sha256: str
