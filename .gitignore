@@ -12,7 +12,6 @@ data/
 uploads/
 pgdata/
 postgres-data/
-*.epub
 *.jpg
 *.jpeg
 *.png
