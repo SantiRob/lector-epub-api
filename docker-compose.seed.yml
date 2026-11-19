@@ -1,0 +1,10 @@
+# Override: API image with the books in seed/books/ preloaded.
+#   docker compose -f docker-compose.yml -f docker-compose.seed.yml up -d --build
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.seeded
+    image: epub-api:v1-seeded
+    environment:
+      SEED_RIGHTS_NOTE: ${SEED_RIGHTS_NOTE:-Copia privada usada solo para pruebas locales. No redistribuir.}

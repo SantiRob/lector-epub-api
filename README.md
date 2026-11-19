@@ -24,7 +24,7 @@ Requiere Docker con el motor en funcionamiento. Copie .env.example a .env y comp
     docker compose logs -f api
     curl.exe http://localhost:8000/api/v1/health
 
-La API se publica solo en 127.0.0.1:8000. /docs y /openapi.json muestran el contrato. Compose espera el healthcheck de PostgreSQL; la API ejecuta alembic upgrade head antes de iniciar. Para migrar manualmente: docker compose run --rm api alembic upgrade head. La imagen local se llama epub-api:v1.
+La API se publica por defecto solo en 127.0.0.1:8000; API_HOST y API_PORT en .env cambian la interfaz y el puerto (API_HOST=0.0.0.0 la expone a la red local, por ejemplo para probar desde un celular físico). /docs y /openapi.json muestran el contrato. Compose espera el healthcheck de PostgreSQL; la API ejecuta alembic upgrade head antes de iniciar. Para migrar manualmente: docker compose run --rm api alembic upgrade head. La imagen local se llama epub-api:v1.
 
 Reconstruya con docker compose build y docker compose up -d --force-recreate. Los volúmenes postgres_data y uploads_data conservan libros y reseñas. docker compose down detiene sin borrar datos; down -v borra los volúmenes. Revise fallos con docker compose logs --tail=200 api db.
 
@@ -58,3 +58,27 @@ Las pruebas requieren un PostgreSQL de prueba separado. Con Compose, use el arch
 Defina TEST_DATABASE_URL con postgresql+psycopg://epub:PASSWORD_URL_ENCODED@127.0.0.1:5433/test_epub (codifique caracteres especiales), instale requirements-dev.txt y ejecute python -m pytest -q. El fixture exige un nombre con test, aplica Alembic y trunca solo esa base entre pruebas. Las pruebas cubren búsqueda, filtro, cursor, ficha, portada, descarga, autenticación, límites de cuerpo, archivos inválidos/grandes/duplicados y reseñas.
 
 Para verificar persistencia, cargue un libro y reseña, anote sus IDs, reconstruya con docker compose build y docker compose up -d --force-recreate, y vuelva a consultar /books/{id} y /books/{id}/reviews. El script scripts/smoke_compose.py hace esta comprobación en dos pasos (create antes y verify después); requiere ADMIN_USERNAME y ADMIN_PASSWORD en el entorno y httpx instalado. La validación EPUB limita entradas, tamaño descomprimido, proporción de compresión, rutas peligrosas y archivos de lectura. No sustituye un análisis antimalware; cargue fuentes confiables.
+
+## Imagen con libros precargados (solo pruebas locales)
+
+`Dockerfile.seeded` genera `epub-api:v1-seeded`: la misma API más los EPUB de `seed/books/`,
+que `scripts/seed_books.py` carga en cada arranque (idempotente por SHA-256: no duplica).
+`seed/` está en `.gitignore`; los libros nunca entran al repo. No subir esta imagen a un registry.
+
+Construir (quien tiene los libros):
+
+```powershell
+# copiar los .epub a seed\books\ y luego:
+python -m scripts.seed_books --check --dir seed/books   # opcional: valida y muestra metadatos
+docker compose -f docker-compose.yml -f docker-compose.seed.yml up -d --build
+docker compose logs api | Select-String seed             # [seed] creados=12 existentes=0 fallidos=0
+docker save epub-api:v1-seeded -o epub-api-seeded.tar    # para compartir con el equipo
+```
+
+Usar la imagen compartida (sin `--build`, con su propio `.env`):
+
+```powershell
+docker load -i epub-api-seeded.tar
+docker compose -f docker-compose.yml -f docker-compose.seed.yml up -d
+curl http://127.0.0.1:8000/api/v1/books
+```

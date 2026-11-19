@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import html.entities
 import os
 import posixpath
 import re
@@ -29,6 +30,18 @@ MAX_COMPRESSION_RATIO = 100
 
 class StorageValidationError(ValueError):
     pass
+
+
+# XHTML content documents commonly use HTML named entities (&nbsp;, &mdash;...)
+# declared by their XHTML DOCTYPE. expat does not load external DTDs, so map them
+# explicitly; unknown entities still fail.
+_HTML_ENTITIES = {name: chr(codepoint) for name, codepoint in html.entities.name2codepoint.items()}
+
+
+def _parse_content_document(data: bytes) -> ElementTree.Element:
+    parser = ElementTree.XMLParser()
+    parser.entity.update(_HTML_ENTITIES)
+    return ElementTree.fromstring(data, parser=parser)
 
 
 def storage_root() -> Path:
@@ -148,7 +161,7 @@ def validate_epub(path: Path) -> None:
                 document = posixpath.normpath(posixpath.join(base, href))
                 if not _safe_zip_member(document) or document not in names:
                     raise StorageValidationError("EPUB con contenido de lectura faltante")
-                root = ElementTree.fromstring(archive.read(document))
+                root = _parse_content_document(archive.read(document))
                 expected = "html" if media_type == "application/xhtml+xml" else "svg"
                 if root.tag.rsplit("}", 1)[-1] != expected:
                     raise StorageValidationError("Contenido de lectura inválido")
