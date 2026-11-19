@@ -32,13 +32,13 @@ def png_bytes() -> bytes:
     return stream.getvalue()
 
 
-def upload(client, *, title="Libro", author="Autora", language="es", epub=None, cover=True):
+def upload(client, *, title="Libro", author="Autora", language="es", category="Clásicos", epub=None, cover=True):
     files = {"epub": ("anything.epub", epub if epub is not None else epub_bytes(), "application/octet-stream")}
     if cover:
         files["cover"] = ("anything.png", png_bytes(), "application/octet-stream")
     return client.post(
         "/api/v1/books",
-        data={"title": title, "author": author, "language": language, "rights_note": "Distribución permitida"},
+        data={"title": title, "author": author, "language": language, "category": category, "rights_note": "Distribución permitida"},
         files=files,
         auth=("test-admin", "test-password"),
     )
@@ -52,6 +52,7 @@ def test_auth_upload_detail_cover_download(client):
     response = upload(client)
     assert response.status_code == 201, response.text
     book = response.json()
+    assert book["category"] == "Clásicos"
     assert book["has_cover"] and book["cover_url"].startswith("/api/v1/")
     assert "epub_path" not in book and "cover_path" not in book
     assert client.get(f"/api/v1/books/{book['id']}").status_code == 200
@@ -64,10 +65,13 @@ def test_auth_upload_detail_cover_download(client):
 
 def test_search_filter_cursor_and_aggregates(client):
     assert upload(client, title="Árbol", author="Ana").status_code == 201
-    assert upload(client, title="Mar", author="Beto", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Adios</p></body></html>'), cover=False).status_code == 201
-    assert upload(client, title="Sol", author="Ana", language="en", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Mundo</p></body></html>'), cover=False).status_code == 201
+    assert upload(client, title="Mar", author="Beto", category="Novela", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Adios</p></body></html>'), cover=False).status_code == 201
+    assert upload(client, title="Sol", author="Ana", language="en", category="Poesía", epub=epub_bytes(b'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Mundo</p></body></html>'), cover=False).status_code == 201
     result = client.get("/api/v1/books", params={"q": "Ana", "language": "es"}).json()
     assert [book["title"] for book in result["items"]] == ["Árbol"]
+    category_result = client.get("/api/v1/books", params={"category": "novela"}).json()
+    assert [book["title"] for book in category_result["items"]] == ["Mar"]
+    assert client.get("/api/v1/books", params={"category": "   "}).status_code == 422
     first = client.get("/api/v1/books", params={"limit": 1}).json()
     assert len(first["items"]) == 1 and first["next_cursor"] is not None
     second = client.get("/api/v1/books", params={"limit": 1, "cursor": first["next_cursor"]}).json()
@@ -76,10 +80,11 @@ def test_search_filter_cursor_and_aggregates(client):
     review = client.post(f"/api/v1/books/{first['items'][0]['id']}/reviews", json={"client_review_id": str(uuid4()), "display_name": "Lector", "rating": 4, "comment": "Bueno"})
     assert review.status_code == 201, review.text
     detail = client.get(f"/api/v1/books/{first['items'][0]['id']}").json()
-    assert detail["review_count"] == 1 and detail["average_rating"] == 4
+    assert detail["review_count"] == 1 and detail["average_rating"] == 4 and detail["category"] == "Clásicos"
 
 
 def test_invalid_oversized_duplicate_and_malformed_spine(client):
+    assert upload(client, category="   ").status_code == 422
     assert upload(client, epub=b"not a zip").status_code == 422
     assert upload(client, epub=b"x" * (25 * 1024 * 1024 + 1)).status_code == 422
     assert upload(client, epub=epub_bytes(b"not xml")).status_code == 422

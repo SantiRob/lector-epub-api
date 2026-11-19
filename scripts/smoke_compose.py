@@ -22,7 +22,7 @@ def run() -> None:
             epub = epub_bytes(chapter)
             result = client.post(
                 "/api/v1/books",
-                data={"title": "Prueba persistente", "author": "Prueba", "language": "es", "rights_note": "Archivo de prueba generado"},
+                data={"title": "Prueba persistente", "author": "Prueba", "language": "es", "category": "Pruebas", "rights_note": "Archivo de prueba generado"},
                 files={"epub": ("sample.epub", epub, "application/epub+zip"), "cover": ("sample.png", png_bytes(), "image/png")},
                 auth=(os.environ["ADMIN_USERNAME"], os.environ["ADMIN_PASSWORD"]),
             )

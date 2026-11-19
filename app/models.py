@@ -14,12 +14,16 @@ class Base(DeclarativeBase):
 
 class Book(Base):
     __tablename__ = "books"
-    __table_args__ = (Index("ix_books_published_id", "is_published", "id"),)
+    __table_args__ = (
+        CheckConstraint("char_length(btrim(category)) BETWEEN 1 AND 80", name="ck_books_category_length"),
+        Index("ix_books_published_id", "is_published", "id"),
+    )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     author: Mapped[str] = mapped_column(String(255), nullable=False)
     language: Mapped[str] = mapped_column(String(8), nullable=False)
+    category: Mapped[str] = mapped_column(String(80), nullable=False, server_default="Sin categoría")
     description: Mapped[str | None] = mapped_column(Text)
     epub_path: Mapped[str] = mapped_column(String(512), nullable=False)
     cover_path: Mapped[str | None] = mapped_column(String(512))
