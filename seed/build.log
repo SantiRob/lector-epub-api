@@ -1,0 +1,184 @@
+inicio lun 16/11/2026 12:56:02.43 
+docker 29.9.2
+ Image epub-api:v1-seeded Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 659B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.seeded
+#2 transferring dockerfile: 1.01kB 0.1s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/python:3.13-slim
+#3 DONE 1.2s
+
+#4 [ 1/10] FROM docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+#4 resolve docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90 0.1s done
+#4 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 578.06kB 0.1s
+#5 transferring context: 23.88MB 2.5s done
+#5 DONE 2.5s
+
+#6 [ 2/10] WORKDIR /app
+#6 CACHED
+
+#7 [ 3/10] COPY requirements.txt .
+#7 CACHED
+
+#8 [ 4/10] RUN pip install --no-cache-dir -r requirements.txt && groupadd --system app && useradd --system --gid app app
+#8 4.995 Ignoring tzdata: markers 'platform_system == "Windows"' don't match your environment
+#8 5.254 Collecting alembic==1.17.0 (from -r requirements.txt (line 1))
+#8 5.444   Downloading alembic-1.17.0-py3-none-any.whl.metadata (7.2 kB)
+#8 5.491 Collecting annotated-types==0.8.0 (from -r requirements.txt (line 2))
+#8 5.512   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#8 5.568 Collecting anyio==4.15.1 (from -r requirements.txt (line 3))
+#8 5.588   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#8 5.630 Collecting click==8.5.0 (from -r requirements.txt (line 4))
+#8 5.648   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#8 5.757 Collecting fastapi==0.119.1 (from -r requirements.txt (line 5))
+#8 5.782   Downloading fastapi-0.119.1-py3-none-any.whl.metadata (28 kB)
+#8 6.221 Collecting greenlet==3.5.6 (from -r requirements.txt (line 6))
+#8 6.238   Downloading greenlet-3.5.6-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+#8 6.267 Collecting h11==0.16.0 (from -r requirements.txt (line 7))
+#8 6.284   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#8 6.316 Collecting idna==3.20 (from -r requirements.txt (line 8))
+#8 6.332   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#8 6.397 Collecting Mako==1.4.3 (from -r requirements.txt (line 9))
+#8 6.416   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+#8 6.529 Collecting MarkupSafe==3.0.4 (from -r requirements.txt (line 10))
+#8 6.547   Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#8 6.922 Collecting Pillow==12.0.0 (from -r requirements.txt (line 11))
+#8 6.944   Downloading pillow-12.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+#8 7.083 Collecting psycopg==3.2.12 (from -r requirements.txt (line 12))
+#8 7.106   Downloading psycopg-3.2.12-py3-none-any.whl.metadata (4.5 kB)
+#8 7.520 Collecting psycopg-binary==3.2.12 (from -r requirements.txt (line 13))
+#8 7.618   Downloading psycopg_binary-3.2.12-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.9 kB)
+#8 7.832 Collecting pydantic==2.14.1 (from -r requirements.txt (line 14))
+#8 7.858   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+#8 9.359 Collecting pydantic-core==2.50.1 (from -r requirements.txt (line 15))
+#8 9.380   Downloading pydantic_core-2.50.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#8 9.413 Collecting python-multipart==0.0.20 (from -r requirements.txt (line 16))
+#8 9.430   Downloading python_multipart-0.0.20-py3-none-any.whl.metadata (1.8 kB)
+#8 10.07 Collecting SQLAlchemy==2.0.44 (from -r requirements.txt (line 17))
+#8 10.17   Downloading sqlalchemy-2.0.44-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.5 kB)
+#8 10.23 Collecting starlette==0.48.0 (from -r requirements.txt (line 18))
+#8 10.25   Downloading starlette-0.48.0-py3-none-any.whl.metadata (6.3 kB)
+#8 10.27 Collecting typing-inspection==0.4.4 (from -r requirements.txt (line 19))
+#8 10.29   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#8 10.32 Collecting typing-extensions==4.16.0 (from -r requirements.txt (line 20))
+#8 10.33   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#8 10.38 Collecting uvicorn==0.38.0 (from -r requirements.txt (line 21))
+#8 10.40   Downloading uvicorn-0.38.0-py3-none-any.whl.metadata (6.8 kB)
+#8 10.50 Downloading alembic-1.17.0-py3-none-any.whl (247 kB)
+#8 10.54 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#8 10.55 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#8 10.58 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#8 10.61 Downloading fastapi-0.119.1-py3-none-any.whl (108 kB)
+#8 10.64 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#8 10.69 Downloading starlette-0.48.0-py3-none-any.whl (73 kB)
+#8 10.75 Downloading greenlet-3.5.6-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (623 kB)
+#8 10.82    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 623.8/623.8 kB 9.9 MB/s  0:00:00
+#8 10.83 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#8 10.85 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#8 10.88 Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+#8 10.90 Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+#8 10.93 Downloading pillow-12.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.0 MB)
+#8 11.53    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 11.9 MB/s  0:00:00
+#8 11.55 Downloading psycopg-3.2.12-py3-none-any.whl (206 kB)
+#8 11.71 Downloading psycopg_binary-3.2.12-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.4 MB)
+#8 12.05    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 13.4 MB/s  0:00:00
+#8 12.07 Downloading pydantic_core-2.50.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#8 12.24    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 15.0 MB/s  0:00:00
+#8 12.27 Downloading python_multipart-0.0.20-py3-none-any.whl (24 kB)
+#8 12.37 Downloading sqlalchemy-2.0.44-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+#8 12.58    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 16.8 MB/s  0:00:00
+#8 12.60 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#8 12.62 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#8 12.64 Downloading uvicorn-0.38.0-py3-none-any.whl (68 kB)
+#8 13.28 Installing collected packages: typing-extensions, python-multipart, psycopg-binary, psycopg, Pillow, MarkupSafe, idna, h11, greenlet, click, annotated-types, uvicorn, typing-inspection, SQLAlchemy, pydantic-core, Mako, anyio, starlette, pydantic, alembic, fastapi
+#8 23.68 
+#8 23.69 Successfully installed Mako-1.4.3 MarkupSafe-3.0.4 Pillow-12.0.0 SQLAlchemy-2.0.44 alembic-1.17.0 annotated-types-0.8.0 anyio-4.15.1 click-8.5.0 fastapi-0.119.1 greenlet-3.5.6 h11-0.16.0 idna-3.20 psycopg-3.2.12 psycopg-binary-3.2.12 pydantic-2.14.1 pydantic-core-2.50.1 python-multipart-0.0.20 starlette-0.48.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.38.0
+#8 23.69 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 23.69 
+#8 23.69 [notice] A new release of pip is available: 26.2.2 -> 26.3
+#8 23.69 [notice] To update, run: pip install --upgrade pip
+#8 DONE 24.9s
+
+#9 [ 5/10] COPY alembic.ini ./
+#9 DONE 0.2s
+
+#10 [ 6/10] COPY alembic ./alembic
+#10 DONE 0.1s
+
+#11 [ 7/10] COPY app ./app
+#11 DONE 0.1s
+
+#12 [ 8/10] COPY scripts/__init__.py scripts/seed_books.py ./scripts/
+#12 DONE 0.1s
+
+#13 [ 9/10] COPY seed/books ./seed/books
+#13 DONE 0.2s
+
+#14 [10/10] RUN mkdir /data && chown app:app /data
+#14 DONE 0.5s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 7.5s done
+#15 exporting manifest sha256:e92c6d84e91dbf7aa50b364c570fef6eb902daa8a339c93a0dc92d1f5ded8b39 0.0s done
+#15 exporting config sha256:cf18c3f65f8e3fa59810d727670469951020981c495f226b208a7b2219eba7b5 0.0s done
+#15 exporting attestation manifest sha256:d8ff8f73d6540c4d72f407dcc63f1212d151c89aac25356187d8da3e57977be9 0.0s done
+#15 exporting manifest list sha256:d4c3dc9b82754d43b270096b2348b73dc18ae37b9b6701a42af6595ad921b8d3
+#15 exporting manifest list sha256:d4c3dc9b82754d43b270096b2348b73dc18ae37b9b6701a42af6595ad921b8d3 0.0s done
+#15 naming to docker.io/library/epub-api:v1-seeded 0.0s done
+#15 unpacking to docker.io/library/epub-api:v1-seeded
+#15 unpacking to docker.io/library/epub-api:v1-seeded 2.0s done
+#15 DONE 9.8s
+
+#16 resolving provenance for metadata file
+#16 DONE 0.1s
+ Image epub-api:v1-seeded Built 
+ Container lector-epub-api-api-1 Recreate 
+ Container lector-epub-api-api-1 Recreated 
+ Container lector-epub-api-db-1 Starting 
+ Container lector-epub-api-db-1 Started 
+ Container lector-epub-api-db-1 Waiting 
+ Container lector-epub-api-db-1 Healthy 
+ Container lector-epub-api-api-1 Starting 
+ Container lector-epub-api-api-1 Started 
+compose exit=0 
+NAME                    IMAGE                COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+lector-epub-api-api-1   epub-api:v1-seeded   "sh -c 'alembic upgr…"   api       34 seconds ago   Up 25 seconds (healthy)   127.0.0.1:8000->8000/tcp
+lector-epub-api-db-1    postgres:17.6        "docker-entrypoint.s…"   db        16 hours ago     Up 32 seconds (healthy)   5432/tcp
+api-1  | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+api-1  | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+api-1  | [seed] +1 Dioses egipcios
+api-1  | [seed] +2 El trono de fuego
+api-1  | [seed] +3 Harry Potter y el cáliz de fuego
+api-1  | [seed] +4 Harry Potter y el Misterio del Príncipe
+api-1  | [seed] +5 Harry Potter y el prisionero de Azkaban
+api-1  | [seed] +6 Harry Potter y la cámara secreta
+api-1  | [seed] +7 Harry Potter y la Orden del Fénix
+api-1  | [seed] +8 Harry Potter y la piedra filosofal
+api-1  | [seed] +9 It
+api-1  | [seed] +10 La Pirámide Roja
+api-1  | [seed] +11 La sombra de la serpiente
+api-1  | [seed] +12 Ready Player One
+api-1  | [seed] +13 El Gaucho Martín Fierro
+api-1  | [seed] +14 La Regenta
+api-1  | [seed] +15 Pepita Jiménez
+api-1  | [seed] +16 Marianela
+api-1  | [seed] +17 Don Quijote
+api-1  | [seed] +18 El sombrero de tres picos
+api-1  | [seed] +19 Vida De Lazarillo De Tormes Y De Sus Fortunas Y Adversidades
+api-1  | [seed] +20 Niebla (Nivola)
+api-1  | [seed] creados=20 existentes=0 fallidos=0
+api-1  | INFO:     Started server process [1]
+api-1  | INFO:     Waiting for application startup.
+api-1  | INFO:     Application startup complete.
+api-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+api-1  | INFO:     127.0.0.1:38576 - "GET /api/v1/health HTTP/1.1" 200 OK
+{"status":"ok"} 
+FIN 

@@ -18,5 +18,4 @@ postgres-data/
 *.png
 *.webp
 !.github/**
-seed/
 *.tar

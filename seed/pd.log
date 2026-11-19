@@ -1,0 +1,20 @@
+inicio lun 16/11/2026 12:54:15.43 
+pg2000 exit=0 
+pg320 exit=0 
+pg49836 exit=0 
+pg17340 exit=0 
+pg17073 exit=0 
+pg29506 exit=0 
+pg17223 exit=0 
+pg14765 exit=0 
+FIN 
+curl: (6) Could not resolve host: gutenberg.pglaf.org
+pg320 exit=6 
+curl: (6) Could not resolve host: gutenberg.pglaf.org
+pg49836 exit=6 
+pg17340 exit=0 
+pg17073 exit=0 
+pg29506 exit=0 
+pg17223 exit=0 
+pg14765 exit=0 
+FIN 
